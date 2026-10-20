@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}PapaXAI — Comprende la salud de tus cultivos, hoja por hoja{% endblock %}
+
+{% block content %}
+<!-- Sección Hero Editorial -->
+<section class="hero-editorial">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-content">
+        <span class="botanical-tag">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="12" cy="12" r="8"/>
+          </svg>
+          Fitopatología Computacional · Carica papaya L.
+        </span>
+
+        <h1>Comprende la salud de tus cultivos, hoja por hoja.</h1>
+
+        <p class="hero-subtitle">
+          PapaXAI utiliza inteligencia artificial para analizar fotografías de hojas de papaya, reconocer patrones asociados a enfermedades foliares y mostrar una explicación visual de sus resultados.
+        </p>
+
+        <div class="hero-actions">
+          <a href="{% url 'diagnostico:analizar' %}" class="btn btn-primary" id="btn-hero-analizar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            Analizar una hoja
+          </a>
+          <a href="{% url 'diagnostico:acerca' %}" class="btn btn-secondary" id="btn-hero-acerca">
+            Conocer el modelo
+          </a>
+        </div>
+
+        <!-- Barra de especificaciones del modelo experimental -->
+        <div class="hero-meta-bar">
+          <div class="meta-item">
+            <span class="meta-label">Extractor Visual</span>
+            <span class="meta-value">ResNet50 Fine-Tuned</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Clasificador</span>
+            <span class="meta-value">XGBoost Multiclase</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Explicabilidad</span>
+            <span class="meta-value">Oclusión (7×7 parches)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Placa Botánica de Ilustración Científica -->
+      <div class="hero-visual">
+        <div class="botanical-plate">
+          <div class="botanical-plate-inner">
+            <img src="{% static 'img/papaya_botanical_plate.jpg' %}" alt="Lámina botánica científica de Carica papaya L." width="440" height="520">
+            <div class="botanical-plate-caption">
+              <span><b>Lámina I:</b> Morfología foliar de <i>Carica papaya L.</i></span>
+              <span class="mono">Herbarium Digital · Tesis 2026</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Sección Metodología en 3 Fases (Composición Editorial Asimétrica) -->
+<section class="section-editorial">
+  <div class="container">
+    <div class="section-head">
+      <span class="taxonomy-num">[01] PROTOCOLO DE EVALUACIÓN</span>
+      <h2 class="section-title">El proceso de análisis agronómico digital</h2>
+    </div>
+
+    <div class="process-layout">
+      <!-- Fase 1 -->
+      <article class="process-step">
+        <span class="process-num">01</span>
+        <span class="botanical-tag" style="margin-bottom: 0.75rem; width: fit-content;">Captura de campo</span>
+        <h3>Cargar fotografía</h3>
+        <p>
+          Toma o selecciona una fotografía nítida de la lámina foliar de la planta de papaya. El sistema admite formatos JPG, PNG y WEBP con iluminación natural y encuadre centrado en los síntomas visibles.
+        </p>
+      </article>
+
+      <!-- Fase 2 -->
+      <article class="process-step">
+        <span class="process-num">02</span>
+        <span class="botanical-tag" style="margin-bottom: 0.75rem; width: fit-content;">Inferencia híbrida</span>
+        <h3>Analizar con inteligencia artificial</h3>
+        <p>
+          La red neuronal convolucional ResNet50 extrae un vector latente de 2,048 características morfológicas, el cual es procesado por el clasificador XGBoost para cuantificar la probabilidad en cinco categorías fitosanitarias.
+        </p>
+      </article>
+
+      <!-- Fase 3 -->
+      <article class="process-step">
+        <span class="process-num">03</span>
+        <span class="botanical-tag" style="margin-bottom: 0.75rem; width: fit-content;">Interpretación XAI</span>
+        <h3>Consultar resultado y explicación visual</h3>
+        <p>
+          Examina la patología diagnosticada, la distribución de probabilidades y un mapa de importancia por oclusión que revela qué regiones de la hoja influyeron decisivamente en la decisión algorítmica.
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Catálogo Fitosanitario del Cultivo -->
+<section class="section-editorial" style="background-color: var(--bg-surface);">
+  <div class="container">
+    <div class="section-head">
+      <span class="taxonomy-num">[02] COBERTURA FITOPATOLÓGICA</span>
+      <h2 class="section-title">Patologías y estados foliares identificables</h2>
+      <p style="color: var(--color-muted); max-width: 650px; margin-top: 0.5rem;">
+        El modelo fue entrenado y validado experimentalmente sobre colecciones estandarizadas de patologías foliares frecuentes en plantaciones de papaya tropical.
+      </p>
+    </div>
+
+    <div class="diseases-grid">
+      {% for key, pat in patologias.items %}
+      <div class="disease-card">
+        <span class="disease-card-indicator" style="background-color: {{ pat.color_estado }};"></span>
+        <span class="botanical-tag" style="font-size: 0.68rem; margin-bottom: 0.5rem; display: block; width: fit-content;">{{ pat.tipo_patogeno }}</span>
+        <h4>{{ pat.nombre_es }}</h4>
+        <span class="disease-agent">{{ pat.agente }}</span>
+        <p>{{ pat.descripcion|truncatewords:20 }}</p>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div style="margin-top: 3rem; text-align: center;">
+      <a href="{% url 'diagnostico:analizar' %}" class="btn btn-primary" id="btn-catalogo-analizar">
+        Iniciar análisis foliar ahora
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}

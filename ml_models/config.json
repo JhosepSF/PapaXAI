@@ -1,0 +1,53 @@
+{
+  "model_name": "ResNet50_XGB",
+  "extractor_architecture": "resnet50",
+  "classifier_type": "XGBoost",
+  "extractor_file": "extractor.keras",
+  "classifier_file": "classifier.json",
+  "feature_dim": 2048,
+  "input_size": [
+    224,
+    224
+  ],
+  "color_mode": "RGB",
+  "image_values_before_preprocess": "float32_0_255",
+  "preprocessing": "tf.keras.applications.resnet50.preprocess_input",
+  "labels": [
+    "Anthracnose",
+    "BacterialSpot",
+    "Curl",
+    "Healthy",
+    "RingSpot"
+  ],
+  "labels_es": [
+    "Antracnosis",
+    "Mancha bacteriana",
+    "Enrollamiento foliar",
+    "Hoja sana",
+    "Mancha anular"
+  ],
+  "labels_en": [
+    "Anthracnose",
+    "Bacterial spot",
+    "Leaf curl",
+    "Healthy leaf",
+    "Ring spot"
+  ],
+  "label_to_id": {
+    "Anthracnose": 0,
+    "BacterialSpot": 1,
+    "Curl": 2,
+    "Healthy": 3,
+    "RingSpot": 4
+  },
+  "probability_order": [
+    "Anthracnose",
+    "BacterialSpot",
+    "Curl",
+    "Healthy",
+    "RingSpot"
+  ],
+  "seed": 42,
+  "generated_utc": "2026-10-19T23:44:51.766297+00:00",
+  "warning": "Uso académico de apoyo visual: no equivale a diagnóstico fitopatológico confirmado."
+}

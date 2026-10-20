@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}PapaXAI — Metodología, Arquitectura y Acerca del Sistema{% endblock %}
+
+{% block content %}
+<!-- Hero de la sección Acerca de -->
+<section class="about-hero">
+  <div class="container container-narrow">
+    <span class="botanical-tag">
+      Memoria Técnica · Tesis de Grado
+    </span>
+    <h1>Arquitectura y Fundamentos de PapaXAI</h1>
+    <p class="hero-subtitle" style="margin-bottom: 0;">
+      Documentación técnica del sistema inteligente de diagnóstico foliar basado en el ensamble de aprendizaje profundo (ResNet50) y árboles potenciados por gradiente (XGBoost), con explicabilidad visual por oclusión.
+    </p>
+  </div>
+</section>
+
+<!-- Cuerpo del Artículo Científico -->
+<section class="about-layout container container-narrow">
+  <article class="about-article">
+    
+    <!-- 1. Introducción y Contexto -->
+    <section>
+      <span class="taxonomy-num">SECCIÓN 1.0</span>
+      <h2>¿Qué es PapaXAI y por qué fue desarrollado?</h2>
+      <p>
+        <b>PapaXAI</b> es una plataforma web desarrollada como producto tecnológico de la tesis de ingeniería titulada:
+      </p>
+      <blockquote style="border-left: 3px solid var(--color-primary); padding: 0.75rem 1.25rem; background-color: var(--color-light); border-radius: 0 var(--radius-xs) var(--radius-xs) 0; margin: 1.25rem 0; font-family: var(--font-serif); font-style: italic; color: var(--color-primary-dark);">
+        "Sistema inteligente de diagnóstico agrícola basado en aprendizaje profundo y XAI para la detección de enfermedades en cultivos de papaya".
+      </blockquote>
+      <p>
+        El cultivo de papaya (<i>Carica papaya L.</i>) constituye una de las especies frutales tropicales de mayor relevancia socioeconómica en el Perú y América Latina. Sin embargo, su productividad se ve severamente mermada por afecciones fitopatológicas foliares que provocan defoliación prematura, marchitez y muerte de la planta.
+      </p>
+      <p>
+        PapaXAI surge ante la necesidad de ofrecer a productores agrícolas, técnicos de campo e investigadores una herramienta accesible, veloz y científicamente transparente para la pre-identificación de estas patologías a partir de fotografías tomadas con dispositivos móviles convencionales.
+      </p>
+    </section>
+
+    <!-- 2. Arquitectura del Modelo Híbrido -->
+    <section>
+      <span class="taxonomy-num">SECCIÓN 2.0</span>
+      <h2>Arquitectura Híbrida: ResNet50 + XGBoost</h2>
+      <p>
+        A diferencia de los enfoques convencionales que utilizan una red neuronal de extremo a extremo, este sistema implementa un <b>enfoque híbrido desacoplado</b> seleccionado tras exhaustivos experimentos comparativos:
+      </p>
+
+      <!-- Diagrama Visual Editorial del Flujo -->
+      <div class="pipeline-diagram-box">
+        <div style="font-family: var(--font-heading); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-muted); font-weight: 700; margin-bottom: 1rem;">
+          Flujo de Datos e Inferencia
+        </div>
+
+        <div class="diagram-steps-flow">
+          <div class="diagram-node">
+            <div>
+              <div class="diagram-node-title">1. Fotografía foliar</div>
+              <div class="diagram-node-desc">Captura en campo con iluminación natural (JPG / PNG / WEBP)</div>
+            </div>
+            <span class="botanical-tag">Entrada</span>
+          </div>
+
+          <div class="diagram-arrow">&darr;</div>
+
+          <div class="diagram-node">
+            <div>
+              <div class="diagram-node-title">2. Preprocesamiento estandarizado</div>
+              <div class="diagram-node-desc">Redimensionamiento a 224×224 px + normalización BGR ImageNet</div>
+            </div>
+            <span class="botanical-tag">Preproc</span>
+          </div>
+
+          <div class="diagram-arrow">&darr;</div>
+
+          <div class="diagram-node">
+            <div>
+              <div class="diagram-node-title">3. Extractor Convolucional ResNet50 Fine-Tuned</div>
+              <div class="diagram-node-desc">Extracción profunda de patrones morfológicos y texturas de lesión</div>
+            </div>
+            <span class="botanical-tag">CNN</span>
+          </div>
+
+          <div class="diagram-arrow">&darr;</div>
+
+          <div class="diagram-node">
+            <div>
+              <div class="diagram-node-title">4. Vector de características latentes (Embedding)</div>
+              <div class="diagram-node-desc">Representación numérica compacta de <b>2,048 dimensiones</b></div>
+            </div>
+            <span class="botanical-tag">Vector</span>
+          </div>
+
+          <div class="diagram-arrow">&darr;</div>
+
+          <div class="diagram-node">
+            <div>
+              <div class="diagram-node-title">5. Clasificador Multiclase XGBoost</div>
+              <div class="diagram-node-desc">Ensamble de 300 árboles de decisión potenciados por gradiente</div>
+            </div>
+            <span class="botanical-tag">XGBoost</span>
+          </div>
+
+          <div class="diagram-arrow">&darr;</div>
+
+          <div class="diagram-node" style="border-color: var(--color-primary); background-color: var(--color-light);">
+            <div>
+              <div class="diagram-node-title" style="color: var(--color-primary-dark);">6. Clasificación & Explicabilidad XAI</div>
+              <div class="diagram-node-desc">5 probabilidades relativas + mapa de sensibilidad por oclusión (7×7)</div>
+            </div>
+            <span class="botanical-tag botanical-tag-accent">Salida</span>
+          </div>
+        </div>
+      </div>
+
+      <p>
+        <b>¿Por qué ResNet50 + XGBoost?</b><br/>
+        La red residual ResNet50 aprovecha sus conexiones de salto (<i>skip-connections</i>) para capturar tanto texturas microscópicas como formas geométricas foliares sin sufrir desvanecimiento de gradiente. Por su parte, XGBoost optimiza la frontera de decisión en el espacio tabular de 2,048 características mediante regularización estricta (L1 y L2), reduciendo el sobreajuste y logrando una latencia de inferencia inferior a 5 milisegundos en la etapa clasificatoria.
+      </p>
+    </section>
+
+    <!-- 3. Explicabilidad Visual por Oclusión (XAI) -->
+    <section>
+      <span class="taxonomy-num">SECCIÓN 3.0</span>
+      <h2>Inteligencia Artificial Explicable (XAI)</h2>
+      <p>
+        En aplicaciones agronómicas y biomédicas, un modelo de "caja negra" que predice una clase sin fundamentación visual resulta insuficiente para generar confianza en agricultores y especialistas.
+      </p>
+      <p>
+        PapaXAI implementa <b>Análisis de Sensibilidad por Oclusión</b> aplicado al pipeline completo:
+      </p>
+      <ul class="check-list" style="margin: 1rem 0 1.5rem;">
+        <li>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/></svg>
+          <span>La imagen se divide en parches de 32×32 píxeles, formando una cuadrícula de 7×7 (49 regiones).</span>
+        </li>
+        <li>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/></svg>
+          <span>Cada región es ocluida temporalmente con un valor neutro, reevaluando el pipeline completo.</span>
+        </li>
+        <li>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/></svg>
+          <span>Se mide la variación de probabilidad de la clase predicha: un descenso marcado identifica que ese parche contenía rasgos clave de la patología.</span>
+        </li>
+        <li>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/></svg>
+          <span>El mapa de calor resultante se interpola suavemente y se superpone sobre la fotografía original.</span>
+        </li>
+      </ul>
+      <p>
+        <i>Nota de rigor científico:</i> El método de oclusión evalúa la respuesta directa de XGBoost ante perturbaciones de entrada, evitando el error de emplear Grad-CAM sobre cabezas convolucionales auxiliares desconectadas del clasificador real.
+      </p>
+    </section>
+
+    <!-- 4. Métricas de Evaluación Experimental -->
+    <section>
+      <span class="taxonomy-num">SECCIÓN 4.0</span>
+      <h2>Resultados Experimentales en el Conjunto de Test</h2>
+      <p>
+        El modelo fue evaluado rigurosamente sobre el conjunto de prueba independiente (163 imágenes de hojas de papaya no vistas durante el entrenamiento ni en la optimización de hiperparámetros).
+      </p>
+
+      <table class="metrics-table-plate">
+        <thead>
+          <tr>
+            <th>Métrica de Rendimiento</th>
+            <th>Valor Obtenido</th>
+            <th>Descripción / Intervalo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Exactitud (Accuracy)</b></td>
+            <td class="metric-val">88.96%</td>
+            <td>Tasa global de clasificaciones correctas (0.8896)</td>
+          </tr>
+          <tr>
+            <td><b>F1-Score Macro</b></td>
+            <td class="metric-val">88.01%</td>
+            <td>Balance armónico multiclase (0.8801)</td>
+          </tr>
+          <tr>
+            <td><b>AUC-ROC Macro (OvR)</b></td>
+            <td class="metric-val">0.9864</td>
+            <td>Área bajo la curva One-vs-Rest (0.9864)</td>
+          </tr>
+          <tr>
+            <td><b>Especificidad Macro</b></td>
+            <td class="metric-val">97.13%</td>
+            <td>Capacidad para descartar clases negativas (0.9713)</td>
+          </tr>
+          <tr>
+            <td><b>Intervalo Confianza F1 (95%)</b></td>
+            <td class="metric-val">[82.60% — 93.08%]</td>
+            <td>Estimación no paramétrica por Bootstrap (CI 95%)</td>
+          </tr>
+          <tr>
+            <td><b>Latencia Inferencia Mediana</b></td>
+            <td class="metric-val">102.08 ms</td>
+            <td>Tiempo de respuesta mediano por muestra en CPU</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 5. Limitaciones y Consideraciones Éticas -->
+    <section>
+      <span class="taxonomy-num">SECCIÓN 5.0</span>
+      <h2>Alcance, Limitaciones y Uso Responsable</h2>
+      <p>
+        PapaXAI es una herramienta de asistencia tecnológica orientada al fortalecimiento del diagnóstico agrícola. Para su utilización adecuada, deben considerarse las siguientes limitaciones inherentes:
+      </p>
+      <div class="phytosanitary-warning" style="margin-top: 1rem;">
+        <ul style="margin-left: 1rem; line-height: 1.6;">
+          <li><b>Dominio vegetal específico:</b> El sistema ha sido entrenado exclusivamente para hojas de papaya (<i>Carica papaya L.</i>). No debe utilizarse en otros cultivos o frutos.</li>
+          <li><b>Condiciones de toma:</b> Fotografías con desenfoque extremo, subexposición severa o fondos altamente caóticos pueden degradar la precisión del extractor.</li>
+          <li><b>Complejos patológicos mixtos:</b> Si una hoja presenta coinfección simultánea (ej. antracnosis y virosis), el modelo reportará las probabilidades individuales pero no reemplaza un análisis de biología molecular (PCR o ELISA).</li>
+          <li><b>Naturaleza complementaria:</b> Ninguna predicción del sistema sustituye la inspección de campo de un ingeniero agrónomo colegiado o análisis fitopatológico oficial de laboratorio.</li>
+        </ul>
+      </div>
+    </section>
+
+  </article>
+
+  <!-- Barra Lateral con Fichas de Resumen -->
+  <aside class="about-sidebar">
+    <div class="sidebar-card">
+      <span class="taxonomy-num">DATOS DEL PROYECTO</span>
+      <h3>Tesis de Grado</h3>
+      <p style="font-size: 0.85rem; color: var(--color-muted); line-height: 1.6;">
+        Desarrollado para la obtención del título profesional en Ingeniería de Sistemas / Computación, con aplicación interdisciplinaria a las Ciencias Agrarias.
+      </p>
+    </div>
+
+    <div class="sidebar-card">
+      <span class="taxonomy-num">ESPECIFICACIONES ML</span>
+      <h3 style="font-size: 0.95rem;">Resumen de Componentes</h3>
+      <ul style="list-style: none; font-size: 0.82rem; color: var(--color-text); line-height: 1.8;">
+        <li><b>Framework CNN:</b> TensorFlow / Keras</li>
+        <li><b>Clasificador:</b> XGBoost 3.x</li>
+        <li><b>Vector latente:</b> 2,048 floats</li>
+        <li><b>Backend Web:</b> Django 6.0</li>
+        <li><b>XAI:</b> Occlusion Sensitivity (7×7)</li>
+        <li><b>Reporte:</b> ReportLab PDF</li>
+      </ul>
+    </div>
+
+    <div class="sidebar-card" style="background-color: var(--color-light); border-color: rgba(52, 91, 72, 0.2);">
+      <h3 style="font-size: 0.95rem; color: var(--color-primary-dark);">Probar el sistema</h3>
+      <p style="font-size: 0.85rem; color: var(--color-text); margin-bottom: 1rem;">
+        Evalúa directamente el pipeline con fotografías reales del conjunto de prueba.
+      </p>
+      <a href="{% url 'diagnostico:analizar' %}" class="btn btn-primary btn-sm" style="width: 100%;">
+        Ir a Analizar Hoja
+      </a>
+    </div>
+  </aside>
+</section>
+{% endblock %}

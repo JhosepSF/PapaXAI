@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>{% block title %}PapaXAI — Diagnóstico Agrícola Foliar con IA y XAI{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}PapaXAI: Sistema inteligente de diagnóstico agrícola basado en aprendizaje profundo (ResNet50 + XGBoost) y XAI para la detección de enfermedades en cultivos de papaya.{% endblock %}">
+  
+  <!-- Favicon botánico SVG -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23345B48'><path d='M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 0 0 8 20C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z'/></svg>">
+  
+  <!-- Tipografías de Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Hoja de Estilos PapaXAI -->
+  <link rel="stylesheet" href="{% static 'css/papaxai.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  <!-- Encabezado y Navegación Principal -->
+  <header class="site-header">
+    <div class="container">
+      <nav class="nav-wrapper" aria-label="Navegación principal">
+        <a href="{% url 'diagnostico:inicio' %}" class="brand-link" id="nav-brand">
+          <!-- Símbolo de hoja discreto SVG -->
+          <svg class="brand-logo-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 0 0 8 20C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z"/>
+          </svg>
+          <div class="brand-text">
+            <span class="brand-name">Papa<span>XAI</span></span>
+            <span class="brand-tag">Diagnóstico Botánico · ResNet50 + XGBoost</span>
+          </div>
+        </a>
+
+        <ul class="nav-menu" role="menubar">
+          <li class="nav-item {% if request.resolver_match.url_name == 'inicio' %}active{% endif %}" role="none">
+            <a href="{% url 'diagnostico:inicio' %}" role="menuitem" id="nav-link-inicio">Inicio</a>
+          </li>
+          <li class="nav-item {% if request.resolver_match.url_name == 'analizar' %}active{% endif %}" role="none">
+            <a href="{% url 'diagnostico:analizar' %}" role="menuitem" id="nav-link-analizar">Analizar hoja</a>
+          </li>
+          <li class="nav-item {% if request.resolver_match.url_name == 'acerca' %}active{% endif %}" role="none">
+            <a href="{% url 'diagnostico:acerca' %}" role="menuitem" id="nav-link-acerca">Acerca del sistema</a>
+          </li>
+          <li class="nav-item" role="none">
+            <a href="{% url 'diagnostico:analizar' %}" class="nav-cta" role="menuitem" id="nav-btn-cta">Diagnosticar</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Contenido Central -->
+  <main id="main-content">
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <!-- Pie de Página Editorial -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h4>PapaXAI</h4>
+          <p>
+            Plataforma web de diagnóstico agrícola inteligente basada en aprendizaje profundo y explicabilidad visual (XAI) para la detección de fitopatologías en hojas de papaya (<i>Carica papaya L.</i>).
+          </p>
+        </div>
+        <div class="footer-col">
+          <h5>Navegación</h5>
+          <ul class="footer-links">
+            <li><a href="{% url 'diagnostico:inicio' %}">Inicio</a></li>
+            <li><a href="{% url 'diagnostico:analizar' %}">Analizar fotografía</a></li>
+            <li><a href="{% url 'diagnostico:acerca' %}">Metodología y Modelo</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Patologías Evaluadas</h5>
+          <ul class="footer-links">
+            <li><span style="color:var(--color-muted);">Antracnosis foliar</span></li>
+            <li><span style="color:var(--color-muted);">Mancha bacteriana</span></li>
+            <li><span style="color:var(--color-muted);">Enrollamiento foliar</span></li>
+            <li><span style="color:var(--color-muted);">Hoja sana</span></li>
+            <li><span style="color:var(--color-muted);">Mancha anular (PRSV)</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          &copy; 2026 PapaXAI. Proyecto de Tesis de Ingeniería.
+        </div>
+        <div>
+          Arquitectura Híbrida: ResNet50 Fine-Tuned + XGBoost Multiclase + Análisis por Oclusión XAI.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts JavaScript -->
+  <script src="{% static 'js/papaxai.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

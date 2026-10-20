@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}PapaXAI — Analizar Fotografía Foliar{% endblock %}
+
+{% block content %}
+<section class="analysis-studio">
+  <div class="container">
+    <div style="margin-bottom: 2rem;">
+      <span class="taxonomy-num">[02] ESTUDIO DE INFERENCIA</span>
+      <h1 style="font-size: 2.2rem; letter-spacing: -0.03em;">Analizar muestra foliar</h1>
+      <p style="color: var(--color-muted); max-width: 650px;">
+        Cargue una fotografía nítida de la hoja de papaya para que la arquitectura híbrida evalúe los patrones fitopatológicos y genere la explicación visual por oclusión.
+      </p>
+    </div>
+
+    <!-- Mensajes de Error de Validación -->
+    {% if form.errors %}
+    <div style="background-color: #FFF5F5; border-left: 3px solid #E53E3E; padding: 1rem 1.25rem; border-radius: var(--radius-xs); margin-bottom: 2rem;">
+      <h4 style="color: #9B2C2C; font-size: 0.95rem; margin-bottom: 0.25rem;">Revisa las siguientes observaciones:</h4>
+      <ul style="color: #9B2C2C; font-size: 0.88rem; margin-left: 1.25rem;">
+        {% for field, errors in form.errors.items %}
+          {% for error in errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <div class="studio-grid">
+      <!-- Zona Principal: Carga y Vista Previa -->
+      <div class="dropzone-container">
+        <form method="post" enctype="multipart/form-data" id="analysis-form">
+          {% csrf_token %}
+          
+          <!-- Input oculto para muestra predefinida -->
+          <input type="hidden" name="muestra_seleccionada" id="muestra-seleccionada-input" value="">
+          
+          <!-- Input real de archivo (oculto visualmente) -->
+          {{ form.imagen }}
+
+          <!-- Área Drag and Drop -->
+          <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Zona de arrastre de fotografías">
+            <svg class="dropzone-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+            <div class="dropzone-prompt">Arrastra y suelta tu fotografía aquí</div>
+            <div class="dropzone-subtext">o haz clic para explorar tus archivos (JPG, PNG, WEBP hasta 10 MB)</div>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-select-file">
+              Seleccionar fotografía
+            </button>
+          </div>
+
+          <!-- Vista Previa Activa -->
+          <div class="preview-container" id="preview-container">
+            <div class="preview-grid">
+              <div class="preview-thumb-box">
+                <img id="preview-img" src="" alt="Vista previa de la muestra seleccionada">
+              </div>
+              <div class="preview-meta">
+                <div class="preview-filename" id="preview-filename">archivo.jpg</div>
+                <div class="preview-filesize" id="preview-filesize">0 KB</div>
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-remove-image">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                  </svg>
+                  Cambiar o eliminar imagen
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botón Principal de Envío -->
+          <div style="margin-top: 1.75rem;">
+            <button type="submit" class="btn btn-primary" id="btn-analyze" disabled style="width: 100%; padding: 0.9rem;">
+              Seleccione una imagen para analizar
+            </button>
+          </div>
+        </form>
+
+        <!-- Galería de Fotografías del Conjunto de Prueba (Test Set) -->
+        {% if muestras %}
+        <div class="test-samples-section">
+          <div class="test-samples-heading">Muestras del conjunto de prueba independiente (Tesis)</div>
+          <div class="samples-grid">
+            {% for item in muestras %}
+            <div class="sample-card" data-filename="{{ item.file }}" data-label="{{ item.expected_class }}">
+              <img src="/media/muestras/{{ item.file }}" alt="{{ item.file }}" class="sample-thumb">
+              <div class="sample-info">
+                <span class="sample-label">{{ item.file }}</span>
+                <span class="sample-badge">Clase real esperada: <b>{{ item.expected_class }}</b></span>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          <p style="font-size: 0.78rem; color: var(--color-muted); margin-top: 0.75rem;">
+            <i>Seleccione una muestra con un clic para evaluarla inmediatamente en el pipeline de inferencia y XAI.</i>
+          </p>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Zona Informativa Lateral -->
+      <aside class="studio-aside">
+        <div class="aside-block">
+          <h3>Recomendaciones de captura</h3>
+          <ul class="check-list">
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><b>Iluminación homogénea:</b> Preferir luz natural difusa matutina o bajo sombra, evitando reflejos directos intensos.</span>
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><b>Enfoque perpendicular:</b> Tomar la fotografía de frente al haz de la hoja para conservar la proporción y nervaduras.</span>
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><b>Contraste de fondo:</b> Evitar que ramas u hojas adyacentes distraigan el contorno foliar principal.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="aside-block">
+          <h3>Patologías identificables</h3>
+          <ul style="list-style: none; font-size: 0.86rem; color: var(--color-text); line-height: 1.8;">
+            <li><span style="color:var(--color-primary); font-weight: 600;">1.</span> Antracnosis foliar (<i>Colletotrichum</i>)</li>
+            <li><span style="color:var(--color-primary); font-weight: 600;">2.</span> Mancha bacteriana (<i>Pseudomonas / Xanthomonas</i>)</li>
+            <li><span style="color:var(--color-primary); font-weight: 600;">3.</span> Enrollamiento foliar (<i>Leaf Curl Virus</i>)</li>
+            <li><span style="color:var(--color-primary); font-weight: 600;">4.</span> Hoja sana (Fisiología íntegra)</li>
+            <li><span style="color:var(--color-primary); font-weight: 600;">5.</span> Mancha anular (<i>Papaya ringspot virus - PRSV</i>)</li>
+          </ul>
+        </div>
+
+        <div class="aside-block">
+          <div class="phytosanitary-warning">
+            <b>Aviso Fitopatológico:</b> PapaXAI es una herramienta de soporte analítico basada en visión por computador y XAI. Sus predicciones constituyen apoyo visual y no sustituyen una confirmación fitopatológica de laboratorio.
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- Pantalla de Progreso Real Durante el Procesamiento -->
+<div class="progress-overlay" id="progress-overlay">
+  <div class="progress-card">
+    <div class="spinner-botanical"></div>
+    <div class="progress-phase-title">Procesando muestra foliar</div>
+    <div class="progress-phase-desc">Ejecutando la arquitectura de aprendizaje profundo y explicabilidad visual...</div>
+    
+    <div class="phase-steps">
+      <div class="phase-step-item active" id="step-validate">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Validación y preprocesamiento a 224×224 px</span>
+      </div>
+      <div class="phase-step-item" id="step-resnet">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Extracción de características (ResNet50: 2,048 dims)</span>
+      </div>
+      <div class="phase-step-item" id="step-xgboost">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Clasificación multiclase con XGBoost</span>
+      </div>
+      <div class="phase-step-item" id="step-xai">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Cálculo de explicabilidad por oclusión (49 parches)</span>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

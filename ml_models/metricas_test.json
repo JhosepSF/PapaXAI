@@ -1,0 +1,16 @@
+{
+  "accuracy": 0.8895705521472392,
+  "precision_macro": 0.8947987012987013,
+  "recall_macro": 0.877486936803707,
+  "f1_macro": 0.8800951095687937,
+  "f1_weighted": 0.8868320715269374,
+  "auc_ovr_macro": 0.9863921729305412,
+  "specificity_macro_ovr": 0.971275489688513,
+  "xgboost_predict_proba_seconds_total": 0.0037692980004067067,
+  "f1_macro_bootstrap_ci95": [
+    0.8260310535758982,
+    0.9307774368522777
+  ],
+  "pipeline_latency_median_ms": 102.08250349978698,
+  "pipeline_latency_p95_ms": 109.25514585051133
+}

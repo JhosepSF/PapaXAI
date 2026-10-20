@@ -1,0 +1,85 @@
+# ==============================================================================
+# PapaXAI — .gitignore
+# Proyecto de Tesis: Diagnóstico Agrícola Foliar con ResNet50 + XGBoost + XAI
+# ==============================================================================
+
+# Entornos virtuales de Python
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Bytecode y caché de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Archivos de Entorno y Secretos
+.env
+.env.local
+.env.*.local
+*.sec
+
+# Base de datos SQLite y logs
+*.sqlite3
+*.sqlite3-journal
+db.sqlite3
+*.log
+
+# Estáticos compilados para producción
+staticfiles/
+
+# Archivos de medios subidos por usuarios y generados por XAI
+# (Se ignoran los archivos subidos/generados dinámicamente pero se preserva la estructura con .gitkeep)
+media/uploads/*
+!media/uploads/.gitkeep
+media/xai/*
+!media/xai/.gitkeep
+
+# Muestras de prueba de la tesis (sí deben mantenerse en el repositorio)
+!media/muestras/
+
+# Archivos de editores y sistemas operativos
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+
+# Temporales y respaldos
+*.bak
+*.tmp
+*.temp
+*~
+*.swp
+*.swo
+
+# Directorios de pruebas de desarrollo auxiliares
+scratch/

@@ -1,0 +1,18 @@
+[
+  {
+    "file": "prueba_01_Anthracnose.jpg",
+    "expected_class": "Anthracnose",
+    "expected_class_id": 0,
+    "original_test_path": "/content/drive/MyDrive/Tesis_KevinTorres/BDPapayaLeaf/Original Images/Anthracnose/Anthracnose(249).jpg",
+    "sha256": "390f2c08873a0ed6547d307d490ba52debc35926c9cb7ce7cb3c952d9bb1bcb2",
+    "origin": "test.csv / test independiente"
+  },
+  {
+    "file": "prueba_02_Healthy.jpg",
+    "expected_class": "Healthy",
+    "expected_class_id": 3,
+    "original_test_path": "/content/drive/MyDrive/Tesis_KevinTorres/BDPapayaLeaf/Original Images/Healthy/Healthy(173).jpg",
+    "sha256": "d127f68d01cb51fab21a8199a2d5155fb0cc273ec49a748d80e191dd88de1947",
+    "origin": "test.csv / test independiente"
+  }
+]

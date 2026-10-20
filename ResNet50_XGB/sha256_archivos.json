@@ -1,0 +1,12 @@
+{
+  "README_DJANGO.txt": "653230ee8675ec7727bd1eb1a301c9153e75a2d2d53ad784573ffafba5aa3e01",
+  "artefactos/classifier.json": "5e1ed133c8e06c2d66212c444e04b4757b8f8d668655df5bee09144ffbe4be06",
+  "artefactos/config.json": "9c8aae8674226a3044aea4de74394441c006f0c2a830b3c5eb824afc11b9e03d",
+  "artefactos/extractor.keras": "e0726b8a5bd355e029a4f006bc1218e67bfbd82929a1c85bec717f5e27ca5246",
+  "artefactos/metricas_test.json": "917b147ff06768f9e05d9c4f3615c5a76be30938c78ee5337fd7a86d286f2569",
+  "artefactos/pipeline_config_entrenamiento.json": "352ae949f547dd95142ecbc6902379b0a3b70bb3c264d7e9e7b2db8debe6e5a3",
+  "fotos_test/fotos_test_manifest.json": "6ef9a44b1ae15c37f1d357ef0b1e6d3b0df987afab4d4b8c90ccc133dcdea0bc",
+  "fotos_test/prueba_01_Anthracnose.jpg": "390f2c08873a0ed6547d307d490ba52debc35926c9cb7ce7cb3c952d9bb1bcb2",
+  "fotos_test/prueba_02_Healthy.jpg": "d127f68d01cb51fab21a8199a2d5155fb0cc273ec49a748d80e191dd88de1947",
+  "prueba_inferencia.csv": "1efdf259bc85920b19f16f6ec7d145158f71fd5a888794a179fe71798d577bc5"
+}

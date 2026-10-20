@@ -1,0 +1,33 @@
+{
+  "extractor": "extractor_resnet50_ft.keras",
+  "classifier": "xgboost_final.json",
+  "labels": [
+    "Anthracnose",
+    "BacterialSpot",
+    "Curl",
+    "Healthy",
+    "RingSpot"
+  ],
+  "img_size": [
+    224,
+    224
+  ],
+  "preprocess": "tf.keras.applications.resnet50.preprocess_input",
+  "train_samples": 1142,
+  "ft_samples": 163,
+  "hpo_samples": 163,
+  "test_samples": 163,
+  "seed": 42,
+  "cv_folds": 10,
+  "best_params": {
+    "n_estimators": 300,
+    "max_depth": 2,
+    "learning_rate": 0.10278755125360424,
+    "subsample": 0.6908477030722899,
+    "colsample_bytree": 0.692923975873312,
+    "min_child_weight": 5,
+    "gamma": 0.07029115281752282,
+    "reg_alpha": 0.0018731181403411207,
+    "reg_lambda": 0.049180721931365
+  }
+}

@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}PapaXAI — Resultado del Diagnóstico: {{ diagnostico.clase_predicha_es }}{% endblock %}
+
+{% block content %}
+<section class="result-view">
+  <div class="container">
+    
+    <!-- Barra Superior de Identificación y Metadatos -->
+    <div class="result-header-bar">
+      <div>
+        <span class="taxonomy-num">[03] DICTAMEN FITOPATOLÓGICO</span>
+        <h1 style="font-size: 2.2rem; letter-spacing: -0.03em;">Resultado del diagnóstico foliar</h1>
+      </div>
+      <div style="text-align: right;">
+        <span class="result-id-stamp">ID Consulta: {{ diagnostico.id }}</span>
+        <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 0.25rem;">
+          Registrado el {{ diagnostico.fecha_creacion|date:"d/m/Y \a \l\a\s H:i" }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Cuadrícula Principal: Diagnóstico y Probabilidades -->
+    <div class="result-main-grid">
+      
+      <!-- Panel de Diagnóstico Principal -->
+      <div class="diagnostic-banner">
+        <span class="botanical-tag" style="background-color: var(--color-light);">
+          Categoría Predicha
+        </span>
+
+        <div class="prediction-highlight">
+          <div class="prediction-name-box">
+            <h2>{{ diagnostico.clase_predicha_es }}</h2>
+            <div class="prediction-latin">{{ pat_info.agente }}</div>
+          </div>
+          
+          <div class="confidence-gauge">
+            <div class="confidence-val">{{ prob_ganadora_pct }}%</div>
+            <div class="confidence-label">Probabilidad</div>
+          </div>
+        </div>
+
+        <p style="color: var(--color-text); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">
+          {{ pat_info.descripcion }}
+        </p>
+
+        <!-- Metadatos de la Muestra -->
+        <div class="diagnostic-details-list">
+          <div class="detail-item">
+            <div class="detail-label">Nombre de archivo</div>
+            <div class="detail-value mono" style="font-size: 0.82rem; word-break: break-all;">
+              {{ diagnostico.nombre_archivo_original }}
+            </div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Resolución de entrada</div>
+            <div class="detail-value mono">{{ diagnostico.dimensiones_originales }}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Latencia Inferencia</div>
+            <div class="detail-value mono">{{ diagnostico.tiempo_inferencia_ms }} ms</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Latencia Oclusión XAI</div>
+            <div class="detail-value mono">{{ diagnostico.tiempo_xai_ms }} ms</div>
+          </div>
+        </div>
+
+        <!-- Botones de Acción Inmediata -->
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+          <a href="{% url 'diagnostico:descargar_pdf' diagnostico.id %}" class="btn btn-primary" id="btn-descargar-pdf">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Descargar reporte técnico (PDF)
+          </a>
+          <a href="{% url 'diagnostico:analizar' %}" class="btn btn-secondary" id="btn-analizar-otro">
+            Analizar otra fotografía
+          </a>
+        </div>
+      </div>
+
+      <!-- Panel de Distribución de Probabilidades Multiclase -->
+      <div class="probabilities-panel">
+        <h3>Distribución de probabilidades</h3>
+        <p class="prob-legend">
+          Valores directos devueltos por la función <span class="mono">predict_proba</span> del clasificador XGBoost. Reflejan la puntuación del modelo sobre las 5 clases evaluadas.
+        </p>
+
+        <div class="prob-bars-list">
+          {% for item in probs_data %}
+          <div class="prob-bar-row">
+            <div class="prob-bar-meta">
+              <span class="prob-class-name {% if item.is_winner %}winner{% endif %}">
+                {% if item.is_winner %}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                {% endif %}
+                {{ item.label_es }}
+                <span style="font-weight: 400; font-size: 0.78rem; color: var(--color-muted);">({{ item.label }})</span>
+              </span>
+              <span class="mono" style="font-weight: {% if item.is_winner %}700{% else %}400{% endif %}; color: {% if item.is_winner %}var(--color-primary){% else %}var(--color-muted){% endif %};">
+                {{ item.percentage }}%
+              </span>
+            </div>
+            
+            <div class="prob-track">
+              <div class="prob-fill {% if item.is_winner %}winner{% endif %}" style="width: {{ item.percentage }}%;"></div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div style="margin-top: 1.75rem; padding-top: 1rem; border-top: 1px dashed var(--color-border); font-size: 0.78rem; color: var(--color-muted); line-height: 1.4;">
+          <i>Aclaración estadística:</i> La probabilidad máxima reportada corresponde a la decisión multicategórica de los árboles de decisión y no debe interpretarse como una certeza biológica absoluta ni calibración bayesiana definitiva.
+        </div>
+      </div>
+    </div>
+
+    <!-- Módulo de Explicabilidad Visual (XAI) -->
+    <div class="xai-panel">
+      <div class="xai-panel-head">
+        <div>
+          <span class="taxonomy-num">[04] EXPLICABILIDAD POR OCLUSIÓN (XAI)</span>
+          <h3>Análisis de relevancia visual y zonas de influencia</h3>
+        </div>
+        <span class="botanical-tag botanical-tag-accent">
+          Perturbación 32×32 px (Cuadrícula 7×7)
+        </span>
+      </div>
+
+      <div class="xai-triptych">
+        <!-- 1. Original -->
+        <div class="triptych-card">
+          <div class="triptych-header">
+            <span>A. Fotografía Original</span>
+            <span class="mono" style="font-size: 0.75rem;">Entrada</span>
+          </div>
+          <div class="triptych-img-wrap">
+            <img src="{{ diagnostico.imagen_original.url }}" alt="Fotografía foliar original">
+          </div>
+          <p class="triptych-caption">
+            Imagen original cargada por el usuario, redimensionada a 224×224 px para extracción convolucional.
+          </p>
+        </div>
+
+        <!-- 2. Mapa de Calor -->
+        <div class="triptych-card">
+          <div class="triptych-header">
+            <span>B. Mapa de Oclusión</span>
+            <span class="mono" style="font-size: 0.75rem;">Saliency Map</span>
+          </div>
+          <div class="triptych-img-wrap">
+            {% if diagnostico.mapa_calor_xai %}
+            <img src="{{ diagnostico.mapa_calor_xai.url }}" alt="Mapa de calor por oclusión">
+            {% else %}
+            <div style="color: #A0AEC0; font-size: 0.8rem;">No disponible</div>
+            {% endif %}
+          </div>
+          <p class="triptych-caption">
+            Gradiente térmico interpolado: las zonas cálidas (rojas/amarillas) causaron la mayor caída en la confianza del modelo al ser ocultadas.
+          </p>
+        </div>
+
+        <!-- 3. Superposición -->
+        <div class="triptych-card">
+          <div class="triptych-header">
+            <span>C. Superposición (Overlay)</span>
+            <span class="mono" style="font-size: 0.75rem;">Fusión</span>
+          </div>
+          <div class="triptych-img-wrap">
+            {% if diagnostico.superposicion_xai %}
+            <img src="{{ diagnostico.superposicion_xai.url }}" alt="Superposición del mapa de calor sobre la fotografía original">
+            {% else %}
+            <div style="color: #A0AEC0; font-size: 0.8rem;">No disponible</div>
+            {% endif %}
+          </div>
+          <p class="triptych-caption">
+            Cotejo visual directo de los rasgos patológicos detectados con la morfología foliar de la muestra analizada.
+          </p>
+        </div>
+      </div>
+
+      <!-- Explicación Sencilla de XAI -->
+      <div class="xai-interpretation-box">
+        <b>¿Cómo interpretar esta visualización?</b><br/>
+        Las regiones resaltadas corresponden a zonas cuya modificación o cobertura tuvo mayor influencia en la predicción del modelo (generaron una reducción notable en la probabilidad calculada por XGBoost).
+        <span style="color: var(--color-muted); display: block; margin-top: 0.4rem;">
+          <i>Nota técnica:</i> El mapa visual no constituye necesariamente una delimitación geométrica exacta de los bordes de la lesión foliar, sino un mapa de sensibilidad computacional del pipeline ResNet50 + XGBoost.
+        </span>
+      </div>
+    </div>
+
+    <!-- Ficha Técnica Fitopatológica y Manejo Agronómico -->
+    <div class="disease-monograph">
+      <span class="taxonomy-num">[05] FICHA FITOSANITARIA</span>
+      <h3>Morfología de la patología y recomendaciones de campo</h3>
+
+      <div class="monograph-content">
+        <div>
+          <h4 style="font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--color-primary-dark);">Síntomas característicos</h4>
+          <ul class="check-list" style="margin-top: 0.5rem;">
+            {% for sintoma in pat_info.sintomas_clave %}
+            <li>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg>
+              <span>{{ sintoma }}</span>
+            </li>
+            {% empty %}
+            <li><span>Información en proceso de homologación técnica.</span></li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div>
+          <h4 style="font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--color-primary-dark);">Pautas agronómicas de manejo</h4>
+          <p style="font-size: 0.9rem; line-height: 1.6; color: var(--color-text);">
+            {{ pat_info.manejo_recomendado }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barra de Acciones Final -->
+    <div class="action-bar-footer">
+      <a href="{% url 'diagnostico:inicio' %}" class="btn btn-secondary">
+        &larr; Volver al inicio
+      </a>
+      <div style="display: flex; gap: 1rem;">
+        <a href="{% url 'diagnostico:descargar_pdf' diagnostico.id %}" class="btn btn-secondary">
+          Descargar PDF
+        </a>
+        <a href="{% url 'diagnostico:analizar' %}" class="btn btn-primary">
+          Analizar otra fotografía foliar
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}
