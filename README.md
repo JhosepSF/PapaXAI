@@ -250,17 +250,67 @@ En sistemas Windows, la ruta por defecto tiene un límite heredado de 260 caract
 
 ## 9. Pantallas del Sistema
 
-### Pantalla 1: Inicio (`/`)
-Presentación institucional con lámina botánica de *Carica papaya*, navegación principal, resumen del protocolo de 3 pasos y catálogo de las 5 patologías.
+A continuación se presentan las capturas reales del sistema en funcionamiento correspondientes al flujo completo de evaluación:
 
-### Pantalla 2: Estudio de Análisis (`/analizar/`)
-Área de carga interactiva con Drag & Drop, validación de formato (JPG, PNG, WEBP) y tamaño (<10 MB), galería de muestras del test set para pruebas en un clic, panel lateral de buenas prácticas fotográficas e indicador visual del progreso.
+### 9.1. Interfaz Principal (`/`)
+Presentación institucional y botánica de *Carica papaya*, navegación de acceso rápido, resumen metodológico en 3 pasos, métricas globales del modelo e inventario fitopatológico de las 5 categorías evaluadas.
 
-### Pantalla 3: Resultado del Diagnóstico (`/resultado/<uuid>/`)
-Identificador único e impredecible UUIDv4 (protección contra IDOR), dictamen fitopatológico principal, barras horizontales de probabilidades multiclase, tríptico visual comparativo XAI (Original, Mapa de calor por oclusión, Superposición) y descarga directa del reporte técnico formal en PDF generado con ReportLab.
+<div align="center">
+  <img src="media/pantallas/01_interfaz_principal.png" alt="Interfaz Principal de PapaXAI" width="100%" />
+  <p><i>Figura 1: Vista principal de bienvenida, navegación y catálogo botánico de patologías.</i></p>
+</div>
 
-### Pantalla 4: Acerca del Sistema (`/acerca-de/`)
-Memoria técnica del proyecto de tesis, diagrama interactivo de la arquitectura de datos, fundamentación teórica de la explicabilidad por oclusión sistemática, tabla completa de métricas experimentales del conjunto de prueba y consideraciones agronómicas/éticas.
+---
+
+### 9.2. Estudio de Análisis Foliar (`/analizar/`)
+Zona interactiva de carga con soporte de arrastrar y soltar (*Drag & Drop*), validación estricta de extensiones (`.jpg`, `.png`, `.webp`) y límite de peso (<10 MB), panel lateral de recomendaciones agronómicas de captura y galería de muestras del conjunto de prueba independiente para ejecución inmediata en un clic.
+
+<div align="center">
+  <img src="media/pantallas/analizar.PNG" alt="Estudio de Análisis Foliar" width="100%" />
+  <p><i>Figura 2: Área de carga foliar con previsualización activa de muestra y selector de test set.</i></p>
+</div>
+
+---
+
+### 9.3. Procesamiento Activo del Pipeline (En Ejecución)
+Modal visual interactivo con retroalimentación en tiempo real durante la ejecución de las cuatro fases sincrónicas de inferencia:
+1. Validación y preprocesamiento de la matriz foliar a 224×224 px.
+2. Extracción convolucional de 2,048 características latentes con ResNet50 Fine-Tuned.
+3. Clasificación probabilística multiclase con ensamble XGBoost.
+4. Generación de mapas de explicabilidad XAI mediante perturbación sistemática por oclusión (49 parches de 32×32 px).
+
+<div align="center">
+  <img src="media/pantallas/02_procesando.png" alt="Sistema PapaXAI Procesando Muestra" width="100%" />
+  <p><i>Figura 3: Pantalla de procesamiento activo con retroalimentación del pipeline y spinner botánico.</i></p>
+</div>
+
+---
+
+### 9.4. Resultados del Diagnóstico Fitopatológico (`/resultado/<uuid>/`)
+Panel integral de diagnóstico accesible mediante identificador único criptográfico UUIDv4 (mitigación de vulnerabilidades IDOR). Despliega la categoría fitopatológica predicha con su agente causal, nivel de alerta de severidad, porcentaje de confianza, tiempos exactos de latencia de cómputo, barras horizontales de distribución de probabilidad multiclase y botón de descarga de reporte técnico oficial en PDF.
+
+<div align="center">
+  <img src="media/pantallas/03_resultados.png" alt="Panel de Resultados del Diagnóstico" width="100%" />
+  <p><i>Figura 4: Dictamen fitopatológico principal, latencia y distribución multiclase de probabilidades.</i></p>
+</div>
+
+---
+
+### 9.5. Mapas de Explicabilidad Visual Generados (XAI — Oclusión 7×7)
+Módulo de auditoría científica y transparencia algorítmica. Presenta el tríptico visual comparativo que fundamenta la predicción:
+- **A. Fotografía Original:** Matriz foliar recortada y estandarizada a 224×224 px.
+- **B. Mapa de Oclusión (*Saliency Map*):** Gradiente térmico (escala Jet) donde los colores cálidos (rojo/amarillo) representan las regiones cuya perturbación produjo la mayor caída en la probabilidad $\Delta P$.
+- **C. Superposición (*Overlay* / Zona de Influencia):** Fusión visual con 50% de opacidad sobre el tejido foliar original, permitiendo al agrónomo corroborar si la red neuronal focalizó pústulas necróticas, clorosis o deformaciones verdaderas.
+
+<div align="center">
+  <img src="media/pantallas/04_mapas_generados_xai.png" alt="Módulo XAI y Zonas de Influencia" width="100%" />
+  <p><i>Figura 5: Panel completo de explicabilidad visual por oclusión y zonas de influencia fitopatológica.</i></p>
+</div>
+
+<div align="center">
+  <img src="media/pantallas/04_triptico_xai_detalle.png" alt="Detalle del Tríptico XAI" width="100%" />
+  <p><i>Figura 6: Detalle del tríptico visual (Original, Mapa Térmico de Oclusión y Superposición).</i></p>
+</div>
 
 ---
 
